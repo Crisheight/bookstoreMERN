@@ -14,7 +14,7 @@ app.get('/', (request, response) => {
 })
 
 
-//Route for saving a new book
+//Route for saving a new book into database
 app.post('/books', async (request, response) => {
     try {
         if(
@@ -41,7 +41,7 @@ app.post('/books', async (request, response) => {
     } //End catch
 });
 
-//Rout for getting ALL books
+//Route for getting ALL books from database
 app.get('/books', async (request, response) => {
     try {
         const books = await Book.find({});
@@ -49,6 +49,18 @@ app.get('/books', async (request, response) => {
             count: books.length,
             data: books
         });
+    } catch(error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+    } //End catch
+});
+
+//Route for getting ONE book from database by ID
+app.get('/books/:id', async (request, response) => {
+    try {
+        const { id } = request.params;
+        const book = await Book.findById(id);
+        return response.status(200).json(book);
     } catch(error) {
         console.log(error.message);
         response.status(500).send({message: error.message});
