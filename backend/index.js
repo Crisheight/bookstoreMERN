@@ -5,7 +5,10 @@ import {Book} from './models/bookModel.js';
 
 const app = express();
 
-//Middleware that parses request body
+/**********************************
+Middleware that parses request body
+**********************************/
+
 app.use(express.json());
 
 app.get('/', (request, response) => {
@@ -13,8 +16,10 @@ app.get('/', (request, response) => {
     return response.status(234).send('Welcome to MERN stack');
 })
 
+/**********************************
+Route for saving a new book into database
+**********************************/
 
-//Route for saving a new book into database
 app.post('/books', async (request, response) => {
     try {
         if(
@@ -41,7 +46,10 @@ app.post('/books', async (request, response) => {
     } //End catch
 });
 
-//Route for getting ALL books from database
+/**********************************
+Route for getting ALL books from database
+**********************************/
+
 app.get('/books', async (request, response) => {
     try {
         const books = await Book.find({});
@@ -56,7 +64,10 @@ app.get('/books', async (request, response) => {
     } //End catch
 });
 
-//Route for getting ONE book from database by ID
+/**********************************
+Route for getting ONE book from database by ID
+**********************************/
+
 app.get('/books/:id', async (request, response) => {
     try {
         const { id } = request.params;
@@ -68,7 +79,10 @@ app.get('/books/:id', async (request, response) => {
     } //End catch
 });
 
-//Route for updating existing books
+/**********************************
+ Route for updating existing books
+**********************************/
+
 app.put('/books/:id', async (request, response) => {
     try {
         if(
@@ -90,6 +104,26 @@ app.put('/books/:id', async (request, response) => {
         return response.status(200).send({message: 'Book updated successfully'});
 
     } catch(error) {
+        console.log(error.message);
+        response.status(500).send({message: error.message});
+    } //End catch
+});
+
+/**********************************
+ Route for deleting books by ID
+ **********************************/
+
+app.delete('/books/:id', async (request, response) => {
+    try {
+        const {id} = request.params;
+        const result = await Book.findByIdAndDelete(id);
+
+        if (!result) {
+            return response.status(404).json({message: 'Book not found'});
+        }
+        return response.status(200).json({message: 'Book deleted successfully'});
+
+    } catch (error) {
         console.log(error.message);
         response.status(500).send({message: error.message});
     } //End catch
